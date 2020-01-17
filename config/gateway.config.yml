@@ -1,0 +1,45 @@
+http:
+  port: ${PORT:-8080}
+admin:
+  port: ${PORT_ADMIN:-9876}
+  host: localhost
+apiEndpoints:
+  auth:
+    host: '*'
+    paths: '/auth/*'
+  users:
+    host: '*'
+    paths: '/users/hello'
+serviceEndpoints:
+  auth:
+    url: ${APIAuth}
+  users:
+    url: ${APIUsers}
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+pipelines:
+  pipeline_auth:
+    apiEndpoints:
+      - auth
+    policies:
+      # - key-auth:
+      - proxy:
+          action:
+            serviceEndpoint: auth
+            changeOrigin: true
+  pipeline_users:
+    apiEndpoints:
+      - users
+    policies:
+      # - key-auth:
+      - proxy:
+          action:
+            serviceEndpoint: users
+            changeOrigin: true
