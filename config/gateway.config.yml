@@ -5,10 +5,10 @@ admin:
   host: localhost
 apiEndpoints:
   auth:
-    host: '*'
+    host: ${ServerFE:-'*'}
     paths: '/auth/*'
   users:
-    host: '*'
+    host: ${ServerFE:-'*'}
     paths: '/users/hello'
 serviceEndpoints:
   auth:
