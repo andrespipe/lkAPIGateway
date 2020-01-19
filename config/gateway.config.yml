@@ -4,13 +4,18 @@ admin:
   port: ${PORT_ADMIN:-9876}
   host: localhost
 apiEndpoints:
+  agenda:
+    host: '*'
+    paths: '/agenda/*'
   auth:
-    host: ${ServerFE:-'*'}
+    host: '*'
     paths: '/auth/*'
   users:
-    host: ${ServerFE:-'*'}
-    paths: '/users/hello'
+    host: '*'
+    paths: '/users/*'
 serviceEndpoints:
+  agenda:
+    url: ${APIAgenda}
   auth:
     url: ${APIAuth}
   users:
@@ -25,11 +30,26 @@ policies:
   - proxy
   - rate-limit
 pipelines:
+  pipeline_agenda:
+    apiEndpoints:
+      - agenda
+    policies:
+      - proxy:
+          action:
+            serviceEndpoint: agenda
+            changeOrigin: true
   pipeline_auth:
     apiEndpoints:
       - auth
     policies:
       # - key-auth:
+      # - cors:
+      #     action:
+            # origin: true
+            # origin: 'http://localhost:4200'
+            # credentials: true
+            # methods: 'HEAD,PUT,PATCH,POST,DELETE'
+            # allowedHeaders: 'X-TEST'
       - proxy:
           action:
             serviceEndpoint: auth
